@@ -130,6 +130,6 @@ public class ClientA2 extends JFrame {
 	}
 
 	public void print(String print){
-		System.out.println(print);
+		System.out.println("CLIENT: " + print);
 	}
 }
