@@ -73,48 +73,54 @@ public class ClientA2 extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
+				boolean isANumber = false;
 				if(authenticated){
 					double radius = 0;
 					try{
-						radius = Double.parseDouble(jtfArea.getText().trim());						
+						radius = Double.parseDouble(jtfArea.getText().trim());	
+						isANumber = true;
+						jta.append("Radius is " + radius + "\n");
+						// Send the radius to the server
+						toServer.writeDouble(radius);
+						toServer.flush();
 					}
 					catch(NumberFormatException nfe){
+						isANumber = false;
 						jta.append("ERROR: Please enter a number \n");
 					}
-					jta.append("Radius is " + radius + "\n");
-					// Send the radius to the server
-					toServer.writeDouble(radius);
-					toServer.flush();
 				}
 				else{
 					double user = 0;
 					try{
-						user = Double.parseDouble(jtfUser.getText().trim());						
+						user = Double.parseDouble(jtfUser.getText().trim());
+						isANumber = true;
+						String strUser = String.valueOf(user);
+						toServer.writeUTF(strUser);
+						toServer.flush();    		  
 					}
 					catch(NumberFormatException nfe){
 						jta.append("ERROR: Please enter a number \n");
 					}
-					String strUser = String.valueOf(user);
-					toServer.writeUTF(strUser);
-					toServer.flush();    		  
 				}
 
-				// Get area from the server;
-				String res = fromServer.readUTF();
-				if(res.contains("Welcome")){
-					authenticated = true;
-					jtfArea.setEnabled(true);
-				}
-
-				if(res.equals("User doesn't exist")){
-					print(res);
-					jta.append("Server/" + address + ": " + res + ", please try again" + '\n');
-				}
-				else{
-					// Display to the text area
-					jta.append("Server/" + address + ": " + res + '\n');
-					jtfArea.setText("");
-					jtfUser.setEnabled(false);        	
+				if(isANumber){
+					// Get area from the server;
+					String res = fromServer.readUTF();
+					if(res.contains("Welcome")){
+						authenticated = true;
+						jtfArea.setEnabled(true);
+					}
+					
+					if(res.equals("User doesn't exist")){
+						print(res);
+						jta.append("Server/" + address + ": " + res + ", please try again" + '\n');
+					}
+					else{
+						// Display to the text area
+						jta.append("Server/" + address + ": " + res + '\n');
+						jtfArea.setText("");
+						jtfUser.setEnabled(false);        	
+					}
 				}
 			}
 			catch (IOException ex) {
