@@ -8,7 +8,7 @@ Assignment 2 for Distributed systems. A multi-threaded client/server app that al
 
 ## How to run
 First run the MultiThreadedServerA2 class and then the ClientA2 class. The user is first required to enter their account number (A/C number) and if it is authenticated then the user can enter a radius.
-- __ I have also created a Run class that starts the server and then the client. __
+- __I have also created a Run class that starts the server and then the client.__
 
 ## Settings
 The MultiThreadedServerA2 class contains three settings for connecting to the database:
