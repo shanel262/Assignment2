@@ -1,3 +1,8 @@
+/**
+ * @author Shane Lacey 20013687
+ * @version 1.0.0
+ * @date 21/10/16
+ */
 /*
  Multithreaded version of Area of Circle Client/Server programme
  */

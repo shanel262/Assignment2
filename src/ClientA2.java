@@ -1,3 +1,9 @@
+/**
+ * @author Shane Lacey 20013687
+ * @version 1.0.0
+ * @date 21/10/16
+ */
+
 import java.io.*;
 import java.net.*;
 import java.awt.*;
@@ -68,14 +74,26 @@ public class ClientA2 extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				if(authenticated){
-					radius = Double.parseDouble(jtfArea.getText().trim());
+					double radius = 0;
+					try{
+						radius = Double.parseDouble(jtfArea.getText().trim());						
+					}
+					catch(NumberFormatException nfe){
+						jta.append("ERROR: Please enter a number \n");
+					}
 					jta.append("Radius is " + radius + "\n");
 					// Send the radius to the server
 					toServer.writeDouble(radius);
 					toServer.flush();
 				}
 				else{
-					double user = Double.parseDouble(jtfUser.getText().trim());
+					double user = 0;
+					try{
+						user = Double.parseDouble(jtfUser.getText().trim());						
+					}
+					catch(NumberFormatException nfe){
+						jta.append("ERROR: Please enter a number \n");
+					}
 					String strUser = String.valueOf(user);
 					toServer.writeUTF(strUser);
 					toServer.flush();    		  
