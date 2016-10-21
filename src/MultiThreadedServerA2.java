@@ -57,7 +57,7 @@ public class MultiThreadedServerA2 extends JFrame {
 		// The socket the client is connected through
 		private Socket socket;
 		// The ip address of the client
-		private InetAddress address;
+		private InetAddress address;// = socket.getInetAddress();
 		// The input and output streams to the client
 		private DataInputStream inputFromClient;
 		private DataOutputStream outputToClient;
@@ -65,7 +65,7 @@ public class MultiThreadedServerA2 extends JFrame {
 		// The Constructor for the client
 		public myClient(Socket socket) throws IOException {
 			// Declare & Initialise input/output streams
-
+			address = socket.getInetAddress();
 		      // Create data input and output streams
 		      inputFromClient = new DataInputStream(
 		        socket.getInputStream());
@@ -88,7 +88,7 @@ public class MultiThreadedServerA2 extends JFrame {
 						 // Send area back to the client
 						 outputToClient.writeUTF(strArea);
 						 
-						 jta.append("Radius received from client: " + radius + '\n');
+						 jta.append("Client/" + address.getHostName() + "/" + address.getHostAddress() + ": " + radius + '\n');
 						 jta.append("Area found: " + area + '\n');				        						 
 					 }
 					 else{

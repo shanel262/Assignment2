@@ -14,7 +14,7 @@ public class Run {
 	static ActionListener al = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("Timer");
+			System.out.println("Running Client");
 			ClientA2 client = new ClientA2();
 			timer.stop();
 		}

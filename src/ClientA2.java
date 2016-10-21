@@ -18,6 +18,7 @@ public class ClientA2 extends JFrame {
   
   private boolean authenticated = false;
   private double radius = 0;
+  private String address = "";
 
   public static void main(String[] args) {
     new ClientA2();
@@ -50,7 +51,7 @@ public class ClientA2 extends JFrame {
     try {
       // Create a socket to connect to the server
       Socket socket = new Socket("localhost", 8000);
-
+      address = socket.getInetAddress().toString();
       // Create an input stream to receive data from the server
       fromServer = new DataInputStream(socket.getInputStream());
 
@@ -66,6 +67,7 @@ public class ClientA2 extends JFrame {
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
+    	  print("ADDRESS ON CLIENT: " + address);
     	  if(authenticated){
     		  radius = Double.parseDouble(jtfArea.getText().trim());
     		  // Send the radius to the server
@@ -90,7 +92,7 @@ public class ClientA2 extends JFrame {
         else{
         	// Display to the text area
         	if(authenticated)jta.append("Radius is " + radius + "\n");
-        	jta.append(res + '\n');
+        	jta.append("Server/" + address + ": " + res + '\n');
         	jtfArea.setText("");
         	jtfUser.setEnabled(false);        	
         }

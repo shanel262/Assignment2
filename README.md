@@ -5,5 +5,4 @@ Assignment 2 for Distributed systems. A multi-threaded client/server app that al
 - Comment code
 - Clean code
 - Update docs
-- Retrieve and display ip address and host name on client and server
 - Check input data to make sure they are doubles
