@@ -10,7 +10,7 @@ public class Run {
 		timer.start();
 		MultiThreadedServerA2 server =  new MultiThreadedServerA2();
 	}
-	
+
 	static ActionListener al = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {

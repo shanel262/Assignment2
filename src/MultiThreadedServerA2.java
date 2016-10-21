@@ -1,10 +1,9 @@
 /*
  Multithreaded version of Area of Circle Client/Server programme
-*/
+ */
 import java.io.*;
 import java.net.*;
 import java.sql.*;
-import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 
@@ -17,7 +16,7 @@ public class MultiThreadedServerA2 extends JFrame {
 	String url = "jdbc:mysql://localhost:3306/areadatabase"; //Change this to switch database
 	private String user = "root"; // The username for the DB authentication
 	private String pass = ""; // The password for the DB authentication
-	
+
 	// Text area for displaying contents
 	private JTextArea jta = new JTextArea();
 
@@ -64,13 +63,12 @@ public class MultiThreadedServerA2 extends JFrame {
 
 		// The Constructor for the client
 		public myClient(Socket socket) throws IOException {
-			// Declare & Initialise input/output streams
 			address = socket.getInetAddress();
-		      // Create data input and output streams
-		      inputFromClient = new DataInputStream(
-		        socket.getInputStream());
-		     outputToClient = new DataOutputStream(
-		        socket.getOutputStream());
+			// Declare & Initialise input/output streams
+			inputFromClient = new DataInputStream(
+					socket.getInputStream());
+			outputToClient = new DataOutputStream(
+					socket.getOutputStream());
 		}
 
 		/*
@@ -78,47 +76,47 @@ public class MultiThreadedServerA2 extends JFrame {
 		 */
 		public void run() {
 			boolean authenticated = false;
-			String user = "";
+			String user = "", fname = "", lname = "";
 			try {
-				 while (true) {
-					 if(authenticated){
-						 double radius = inputFromClient.readDouble();
-						 double area = radius * radius * Math.PI;
-						 String strArea = String.valueOf(area);
-						 // Send area back to the client
-						 outputToClient.writeUTF(strArea);
-						 
-						 jta.append("Client/" + address.getHostName() + "/" + address.getHostAddress() + ": " + radius + '\n');
-						 jta.append("Area found: " + area + '\n');				        						 
-					 }
-					 else{
-						 user = inputFromClient.readUTF();
-						 ResultSet rs = null;
-						 Statement authenticate = con.createStatement();
-						 rs = authenticate.executeQuery("SELECT * FROM registeredapplicants WHERE accountnum=" + user);
-						 if(rs.next()){
-							 authenticated = true;
-							 String fname = rs.getString("FirstName"), lname = rs.getString("LastName");				        	
-							 print("NAME: " + fname + " " + lname);
-							 jta.append("User authenticated: " + fname + " " + lname + '\n');
-							 outputToClient.writeUTF("Welcome " + fname + " " + lname);
-						 }
-						 else{
-							 print("User doesn't exist HERE");
-							 outputToClient.writeUTF("User doesn't exist");
-							 jta.append("User doesn't exist: " + user + '\n');
-						 }
-						 
-					 }
-				        // Receive radius from the client
-				 }
-		    
+				while (true) {
+					if(authenticated){
+						double radius = inputFromClient.readDouble();
+						double area = radius * radius * Math.PI;
+						String strArea = String.valueOf(area);
+						// Send area back to the client
+						outputToClient.writeUTF(strArea);
+
+						jta.append("Client/" + fname + lname + "/" + address.getHostName() + "/" + address.getHostAddress() + ": " + radius + '\n');
+						jta.append("Area found: " + area + '\n');				        						 
+					}
+					else{
+						user = inputFromClient.readUTF();
+						ResultSet rs = null;
+						Statement authenticate = con.createStatement();
+						rs = authenticate.executeQuery("SELECT * FROM registeredapplicants WHERE accountnum=" + user);
+						if(rs.next()){
+							authenticated = true;
+							fname = rs.getString("FirstName");
+							lname = rs.getString("LastName");				        	
+							jta.append("User authenticated: " + fname + " " + lname + '\n');
+							outputToClient.writeUTF("Welcome " + fname + " " + lname);
+						}
+						else{
+							print("User doesn't exist");
+							outputToClient.writeUTF("User doesn't exist");
+							jta.append("User doesn't exist: " + user + '\n');
+						}
+
+					}
+					// Receive radius from the client
+				}
+
 			} catch (Exception e) {
 				System.err.println(e + " on " + socket);
 			}
 		}
 	}
-	
+
 	public void print(String print){
 		System.out.println(print);
 	}
