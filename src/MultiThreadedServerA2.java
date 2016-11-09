@@ -38,6 +38,7 @@ public class MultiThreadedServerA2 extends JFrame {
 		}
 		setLayout(new BorderLayout());
 		add(new JScrollPane(jta), BorderLayout.CENTER);
+		jta.setEditable(false); // disable this so the output cannot be edited
 		setTitle("Server");
 		setSize(500, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

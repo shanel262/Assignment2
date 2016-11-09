@@ -3,7 +3,9 @@ Assignment 2 for Distributed systems. A multi-threaded client/server app that al
 
 ## To-Do
 - Comment code
+	- Client is done, needs proof reading
 - Clean code
+- Export as eclipse project
 
 ## How to run
 First run the MultiThreadedServerA2 class and then the ClientA2 class. The user is first required to enter their account number (A/C number) and if it is authenticated then the user can enter a radius.
