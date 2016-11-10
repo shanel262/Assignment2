@@ -113,6 +113,7 @@ public class ClientA2 extends JFrame implements ActionListener {
 					String res = fromServer.readUTF(); // Get response from the server;
 					if(res.equals("User doesn't exist")){// If the user doesn't exist then throw an error and let them try again
 						print(res);
+						jtfUser.setText("");
 						jta.append("Server/" + address + ": " + res + ", please try again" + '\n');
 					}
 					else{
