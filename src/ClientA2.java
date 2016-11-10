@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class ClientA2 extends JFrame {
+public class ClientA2 extends JFrame implements ActionListener {
 	// Text fields for receiving radius and user a/c number
 	private JTextField jtfArea = new JTextField();
 	private JTextField jtfUser = new JTextField();
@@ -21,7 +21,6 @@ public class ClientA2 extends JFrame {
 	private DataOutputStream toServer;
 	private DataInputStream fromServer;
 
-	private boolean authenticated = false; // true if the user has been authenticated with the server
 	private String address = ""; // the Inet address of the server
 
 	public static void main(String[] args) {
@@ -42,8 +41,8 @@ public class ClientA2 extends JFrame {
 		add(p, BorderLayout.NORTH); // Add the panel to the JFrame
 		add(new JScrollPane(jta), BorderLayout.CENTER); // Adding the text area to the JFrame
 
-		jtfArea.addActionListener(new Listener()); // Register listener
-		jtfUser.addActionListener(new Listener()); // Register listener
+		jtfArea.addActionListener(this); // Register listener
+		jtfUser.addActionListener(this); // Register listener
 		jtfArea.setEnabled(false);
 		jta.setEditable(false); // disable this so the output cannot be edited
 
@@ -67,57 +66,64 @@ public class ClientA2 extends JFrame {
 		}
 	}
 
-	private class Listener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			try {
-				boolean isANumber = false;
-				if(authenticated){ // If the user has authenticated with the server then allow them to request the area of a circle
-					double radius = 0; // The requested radius
-					try{
-						radius = Double.parseDouble(jtfArea.getText().trim());	
-						isANumber = true; //if it gets to this point without throwing an error then the radius is a number
-						jta.append("Radius is " + radius + "\n");
-						toServer.writeDouble(radius); // Send the radius to the server
-						toServer.flush();
-					}
-					catch(NumberFormatException nfe){
-						isANumber = false; // if this error is thrown then the entered radius is not a double
-						jta.append("ERROR: Please enter a number \n");
-					}
+
+	public void actionPerformed(ActionEvent e) {
+		boolean isANumber = false;
+		if(e.getSource() == jtfArea){ // If the event was triggered by jtfArea then do this
+			try{
+				double radius = 0; // The requested radius
+				try{
+					radius = Double.parseDouble(jtfArea.getText().trim());	
+					isANumber = true; //if it gets to this point without throwing an error then the radius is a number
+					jta.append("Radius is " + radius + "\n");
+					toServer.writeDouble(radius); // Send the radius to the server
+					toServer.flush();
 				}
-				else{ // If user isn't authenticated then allow them to try authenticate
-					double user = 0;
-					try{
-						user = Double.parseDouble(jtfUser.getText().trim());
-						isANumber = true; //if it reaches this point then the entered a/c number is indeed a number
-						String strUser = String.valueOf(user); // Make it a string
-						toServer.writeUTF(strUser);
-						toServer.flush();    		  
-					}
-					catch(NumberFormatException nfe){
-						jta.append("ERROR: Please enter a number \n");
-					}
+				catch(NumberFormatException nfe){
+					isANumber = false; // if this error is thrown then the entered radius is not a double
+					jta.append("ERROR: Please enter a number \n");
+					jtfArea.setText("");
 				}
 				if(isANumber){
 					String res = fromServer.readUTF(); // Get area from the server;
-					if(res.contains("Welcome")){
-						authenticated = true; // If a welcome message is received from the server then the user has been authenticated
-						jtfArea.setEnabled(true); // Now allow the user to request the area of a circle
-					}
-
+					jta.append("Server/" + address + ": " + res + '\n'); // Display to the text area
+					jtfArea.setText(""); // Clear the jtfArea text box
+				}
+			}
+			catch(IOException ex){
+				jta.append("ERROR: " + ex.getMessage() + "\n");
+				print(ex.toString());
+			}
+		}
+		else if(e.getSource() == jtfUser){ // If the event was triggered by jtfUser then do this
+			try{
+				double user = 0;
+				try{
+					user = Double.parseDouble(jtfUser.getText().trim());
+					isANumber = true; //if it reaches this point then the entered a/c number is indeed a number
+					String strUser = String.valueOf(user); // Make it a string
+					toServer.writeUTF(strUser); // Send the a/c number to the server for authentication
+					toServer.flush();    		  
+				}
+				catch(NumberFormatException nfe){
+					jta.append("ERROR: Please enter a number \n"); // If it reaches here then the a/c number entered wasn't a double
+					jtfUser.setText("");
+				}
+				if(isANumber){
+					String res = fromServer.readUTF(); // Get response from the server;
 					if(res.equals("User doesn't exist")){// If the user doesn't exist then throw an error and let them try again
 						print(res);
 						jta.append("Server/" + address + ": " + res + ", please try again" + '\n');
 					}
 					else{
 						jta.append("Server/" + address + ": " + res + '\n'); // Display to the text area
+						jtfArea.setEnabled(true); // Now allow the user to request the area of a circle
 						jtfArea.setText("");
 						jtfUser.setEnabled(false); // Stop the user entering another a/c number
 					}
 				}
 			}
-			catch (IOException ex) {
+			catch(IOException ex){
 				jta.append("ERROR: " + ex.getMessage() + "\n");
 				print(ex.toString());
 			}
