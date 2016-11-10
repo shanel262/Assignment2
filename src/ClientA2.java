@@ -1,7 +1,7 @@
 /**
  * @author Shane Lacey 20013687
  * @version 1.0.0
- * @date 21/10/16
+ * @date 10/11/16
  */
 
 import java.io.*;
@@ -78,8 +78,7 @@ public class ClientA2 extends JFrame {
 						radius = Double.parseDouble(jtfArea.getText().trim());	
 						isANumber = true; //if it gets to this point without throwing an error then the radius is a number
 						jta.append("Radius is " + radius + "\n");
-						// Send the radius to the server
-						toServer.writeDouble(radius);
+						toServer.writeDouble(radius); // Send the radius to the server
 						toServer.flush();
 					}
 					catch(NumberFormatException nfe){
@@ -101,27 +100,26 @@ public class ClientA2 extends JFrame {
 					}
 				}
 				if(isANumber){
-					// Get area from the server;
-					String res = fromServer.readUTF();
+					String res = fromServer.readUTF(); // Get area from the server;
 					if(res.contains("Welcome")){
 						authenticated = true; // If a welcome message is received from the server then the user has been authenticated
 						jtfArea.setEnabled(true); // Now allow the user to request the area of a circle
 					}
-					
+
 					if(res.equals("User doesn't exist")){// If the user doesn't exist then throw an error and let them try again
 						print(res);
 						jta.append("Server/" + address + ": " + res + ", please try again" + '\n');
 					}
 					else{
-						// Display to the text area
-						jta.append("Server/" + address + ": " + res + '\n');
+						jta.append("Server/" + address + ": " + res + '\n'); // Display to the text area
 						jtfArea.setText("");
 						jtfUser.setEnabled(false); // Stop the user entering another a/c number
 					}
 				}
 			}
 			catch (IOException ex) {
-				System.err.println(ex);
+				jta.append("ERROR: " + ex.getMessage() + "\n");
+				print(ex.toString());
 			}
 		}
 	}
