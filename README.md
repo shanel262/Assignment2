@@ -1,11 +1,6 @@
 # Assignment 2
 Assignment 2 for Distributed systems. A multi-threaded client/server app that allows users to pass in a radius and receive back the area of the circle. The users are authenticated using a database accessed using JDBC.
 
-## To-Do
-- Try change to e.getSource()
-- Export as eclipse project
-- Remove run class
-
 ## How to run
 First run the MultiThreadedServerA2 class and then the ClientA2 class. The user is first required to enter their account number (A/C number) and if it is authenticated then the user can enter a radius and receive back the area.
 
