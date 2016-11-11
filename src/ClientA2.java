@@ -68,26 +68,21 @@ public class ClientA2 extends JFrame implements ActionListener {
 
 
 	public void actionPerformed(ActionEvent e) {
-		boolean isANumber = false;
 		if(e.getSource() == jtfArea){ // If the event was triggered by jtfArea then do this
 			try{
 				double radius = 0; // The requested radius
 				try{
 					radius = Double.parseDouble(jtfArea.getText().trim());	
-					isANumber = true; //if it gets to this point without throwing an error then the radius is a number
 					jta.append("Radius is " + radius + "\n");
 					toServer.writeDouble(radius); // Send the radius to the server
 					toServer.flush();
-				}
-				catch(NumberFormatException nfe){
-					isANumber = false; // if this error is thrown then the entered radius is not a double
-					jta.append("ERROR: Please enter a number \n");
-					jtfArea.setText("");
-				}
-				if(isANumber){
 					String res = fromServer.readUTF(); // Get area from the server;
 					jta.append("Server/" + address + ": " + res + '\n'); // Display to the text area
 					jtfArea.setText(""); // Clear the jtfArea text box
+				}
+				catch(NumberFormatException nfe){
+					jta.append("ERROR: Please enter a number \n");
+					jtfArea.setText("");
 				}
 			}
 			catch(IOException ex){
@@ -100,16 +95,9 @@ public class ClientA2 extends JFrame implements ActionListener {
 				double user = 0;
 				try{
 					user = Double.parseDouble(jtfUser.getText().trim());
-					isANumber = true; //if it reaches this point then the entered a/c number is indeed a number
 					String strUser = String.valueOf(user); // Make it a string
 					toServer.writeUTF(strUser); // Send the a/c number to the server for authentication
-					toServer.flush();    		  
-				}
-				catch(NumberFormatException nfe){
-					jta.append("ERROR: Please enter a number \n"); // If it reaches here then the a/c number entered wasn't a double
-					jtfUser.setText("");
-				}
-				if(isANumber){
+					toServer.flush();
 					String res = fromServer.readUTF(); // Get response from the server;
 					if(res.equals("User doesn't exist")){// If the user doesn't exist then throw an error and let them try again
 						print(res);
@@ -122,6 +110,10 @@ public class ClientA2 extends JFrame implements ActionListener {
 						jtfArea.setText("");
 						jtfUser.setEnabled(false); // Stop the user entering another a/c number
 					}
+				}
+				catch(NumberFormatException nfe){
+					jta.append("ERROR: Please enter a number \n"); // If it reaches here then the a/c number entered wasn't a double
+					jtfUser.setText("");
 				}
 			}
 			catch(IOException ex){
